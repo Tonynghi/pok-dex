@@ -20,6 +20,8 @@
   },
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
+    "no-console": "off",
+    "import/prefer-default-export": "off",
     "react/function-component-definition": [
       2,
       {

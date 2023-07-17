@@ -10,6 +10,12 @@ module.exports = {
       container: {
         center: true,
       },
+      colors: {
+        primary: '#EF2B34',
+        primary700: '#B40008',
+        secondary50: '#D7D7D7',
+        secondary500: '#717171',
+      },
     },
   },
   plugins: [
