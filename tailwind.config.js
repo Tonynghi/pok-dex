@@ -4,8 +4,9 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        sml: { min: '320px', max: '640px' },
+        sml: '560px',
         '3xl': '1872px',
+        mdl: '880px',
       },
       container: {
         center: true,
