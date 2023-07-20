@@ -42,7 +42,7 @@ const TypeGetter = (props: any) => {
   const { name } = props;
 
   return (
-    <div className='hover:scale-[1.12] relative flex justify-center items-center h-[3rem] duration-200 grow'>
+    <div className='hover:scale-[1.12] relative flex justify-center items-center h-[3rem] duration-200'>
       {types[name as keyof typeof types]}
     </div>
   );

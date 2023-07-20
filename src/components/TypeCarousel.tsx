@@ -8,6 +8,7 @@ const NextButton = (props: any) => {
   const { onClick } = props;
   return (
     <button
+      style={{ aspectRatio: 1 / 1 }}
       type='button'
       className='w-[1.25rem] h-[1.25rem] flex flex-1 justify-center items-center rounded-full border-2 border-black bg-white hover:bg-black duration-200 group'
       onClick={onClick}
@@ -21,6 +22,7 @@ const PrevButton = (props: any) => {
   const { onClick } = props;
   return (
     <button
+      style={{ aspectRatio: 1 / 1 }}
       type='button'
       className='w-[1.25rem] h-[1.25rem] flex flex-1 justify-center items-center rounded-full border-2 border-black bg-white hover:bg-black duration-200 group'
       onClick={onClick}
@@ -37,33 +39,30 @@ const TypeCarousel = () => {
       arrows
       infinite
       speed={500}
-      slidesToShow={3}
-      slidesToScroll={3}
+      slidesToShow={9}
+      slidesToScroll={9}
       nextArrow={<NextButton />}
       prevArrow={<PrevButton />}
       responsive={[
         {
-          breakpoint: 1024,
+          breakpoint: 1440,
           settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            infinite: true,
-            dots: true,
+            slidesToShow: 9,
+            slidesToScroll: 9,
           },
         },
         {
-          breakpoint: 600,
+          breakpoint: 720,
           settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            initialSlide: 2,
+            slidesToShow: 6,
+            slidesToScroll: 6,
           },
         },
         {
           breakpoint: 480,
           settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
+            slidesToShow: 3,
+            slidesToScroll: 3,
           },
         },
       ]}

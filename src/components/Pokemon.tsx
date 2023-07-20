@@ -18,7 +18,7 @@ const Pokemon = (props: any) => {
       setSprite(res.data.sprites.other.home.front_default);
       setTypes(res.data.types);
     });
-  });
+  }, [pokemonName]);
 
   return (
     <div className='relative w-[17.5rem] h-[22.5rem]'>
@@ -34,9 +34,9 @@ const Pokemon = (props: any) => {
           </div>
         </div>
         <div className='flex flex-row gap-[2.5rem] items-center text-[1.25rem] font-bold text-white'>
-          {types.map((x: any) => (
-            <div key={x}>
-              <TagGetter name={x.type.name} />
+          {types.map((type: any) => (
+            <div key={type.type.name}>
+              <TagGetter name={type.type.name} />
             </div>
           ))}
         </div>

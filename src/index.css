@@ -7,7 +7,7 @@
 
 @layer components {
   .typeIcon {
-    @apply relative w-[2.5rem] h-[2.5rem] lg:w-[3.75rem] lg:h-[3.75rem];
+    @apply relative w-[2.5rem] h-[2.5rem];
   }
   .typeTag {
     @apply relative w-[6.25rem] h-[2.5rem];
