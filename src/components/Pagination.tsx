@@ -35,20 +35,20 @@ const Pagination = (props: any) => {
   const increase = usePageState((state) => state.increase);
   const decrease = usePageState((state) => state.decrease);
 
-  const inRange = current < 3 || current > 104;
+  const inRange = current <= 3 || current > page - 3;
 
   return (
     <div className='relative flex flex-row gap-[0.5rem] sm:gap-[1.25rem] justify-center items-center'>
       <NavigateButton type='first' onClick={() => changePage(1)} last={page} />
       <NavigateButton type='prev' onClick={() => decrease()} last={page} />
-      {inRange &&
-        pages.slice(0, 3).map((pagenum: number) => (
-          <div key={pagenum}>
-            <PageButton page={pagenum} selected={current} onClick={() => changePage(pagenum)} />
-          </div>
-        ))}
+      {pages.slice(0, 3).map((pagenum: number) => (
+        <div key={pagenum}>
+          <PageButton page={pagenum} selected={current} onClick={() => changePage(pagenum)} />
+        </div>
+      ))}
+      {!inRange && <div className='relative text-[1rem] font-bold text-black'>...</div>}
       {!inRange &&
-        pages.slice(current - 2, current + 1).map((pagenum: number) => (
+        pages.slice(current - 1, current).map((pagenum: number) => (
           <div key={pagenum}>
             <PageButton page={pagenum} selected={current} onClick={() => changePage(pagenum)} />
           </div>

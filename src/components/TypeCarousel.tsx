@@ -43,6 +43,7 @@ const TypeCarousel = () => {
       slidesToScroll={9}
       nextArrow={<NextButton />}
       prevArrow={<PrevButton />}
+      className='flex'
       responsive={[
         {
           breakpoint: 1440,

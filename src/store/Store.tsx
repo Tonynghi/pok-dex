@@ -17,13 +17,42 @@ const usePageState = create<PageState>()((set) => ({
 }));
 
 interface FetchTypeState {
+  currentFetchType: string;
+  changeFetchType: (fetchType: string) => void;
+}
+
+const useFetchTypeState = create<FetchTypeState>()((set) => ({
+  currentFetchType: 'default',
+  changeFetchType: (fetchType) => {
+    set(() => ({ currentFetchType: fetchType }));
+    console.log(`the current fetch type is ${fetchType}`);
+  },
+}));
+
+interface TypeState {
   currentType: string;
   changeType: (type: string) => void;
 }
 
-const useFetchTypeState = create<FetchTypeState>()((set) => ({
-  currentType: 'none',
-  changeType: (type) => set(() => ({ currentType: type })),
+const useTypeState = create<TypeState>()((set) => ({
+  currentType: 'normal',
+  changeType: (type) => {
+    set(() => ({ currentType: type }));
+    console.log(type);
+  },
 }));
 
-export { usePageState, useFetchTypeState };
+interface GenState {
+  currentGen: string;
+  changeGen: (gen: string) => void;
+}
+
+const useGenState = create<GenState>()((set) => ({
+  currentGen: '1',
+  changeGen: (gen) => {
+    set(() => ({ currentGen: gen }));
+    console.log(gen);
+  },
+}));
+
+export { usePageState, useFetchTypeState, useTypeState, useGenState };

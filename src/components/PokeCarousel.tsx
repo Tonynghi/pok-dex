@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-import { usePageState, useFetchTypeState } from '../store/Store';
+import { usePageState, useFetchTypeState, useTypeState, useGenState } from '../store/Store';
 
 import GalleryLayout from './GalleryLayout';
 import GenBar from './GenBar';
@@ -11,8 +11,11 @@ import TypeCarousel from './TypeCarousel';
 const PokeCarousel = (props: any) => {
   const { limit } = props;
 
-  const fetchType = useFetchTypeState((state) => state.currentType);
-  const offset = (usePageState((state) => state.currentPage) - 1) * limit;
+  const fetchType = useFetchTypeState((state) => state.currentFetchType);
+  const type = useTypeState((state) => state.currentType);
+  const gen = useGenState((state) => state.currentGen);
+  const page = usePageState((state) => state.currentPage);
+  const offset = (page - 1) * limit;
 
   const [count, setCount] = useState(0);
   const [pokemonList, setPokemonList] = useState([]);
@@ -20,16 +23,40 @@ const PokeCarousel = (props: any) => {
 
   useEffect(() => {
     setLoading(true);
-    if (fetchType === 'none') {
+    const countLimiter = (estimated: number): number => {
+      if (estimated > count) return count;
+      return estimated;
+    };
+    if (fetchType === 'default') {
       axios
         .get(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`)
         .then((res) => {
           setLoading(false);
           setCount(res.data.count);
-          setPokemonList(res.data.results.map((p: any) => p.name));
+          setPokemonList(res.data.results.map((poke: any) => poke.name));
         });
+    } else if (fetchType === 'type') {
+      axios.get(`https://pokeapi.co/api/v2/type/${type}`).then((res) => {
+        setLoading(false);
+        setCount(res.data.pokemon.length);
+        setPokemonList(
+          res.data.pokemon
+            .slice(offset, countLimiter(page * limit))
+            .map((poke: any) => poke.pokemon.name)
+        );
+      });
+    } else if (fetchType === 'gen') {
+      axios.get(`https://pokeapi.co/api/v2/generation/${gen}`).then((res) => {
+        setLoading(false);
+        setCount(res.data.pokemon_species.length);
+        setPokemonList(
+          res.data.pokemon_species
+            .slice(offset, countLimiter(page * limit))
+            .map((poke: any) => poke.name)
+        );
+      });
     }
-  }, [offset, limit, fetchType]);
+  }, [offset, limit, fetchType, count, page, type, gen]);
 
   if (loading)
     return (

@@ -16,6 +16,7 @@ import { ReactComponent as Psychic } from '../assets/svgs/psychic.svg';
 import { ReactComponent as Rock } from '../assets/svgs/rock.svg';
 import { ReactComponent as Steel } from '../assets/svgs/steel.svg';
 import { ReactComponent as Water } from '../assets/svgs/water.svg';
+import { useTypeState, useFetchTypeState, usePageState } from '../store/Store';
 
 const types = {
   bug: <Bug className='typeIcon' />,
@@ -41,10 +42,38 @@ const types = {
 const TypeGetter = (props: any) => {
   const { name } = props;
 
+  const currentFetchType = useFetchTypeState((state) => state.currentFetchType);
+  const currentType = useTypeState((state) => state.currentType);
+  const changeFetchType = useFetchTypeState((state) => state.changeFetchType);
+  const changeType = useTypeState((state) => state.changeType);
+  const reset = usePageState((state) => state.reset);
+
+  const fetchByType = (type: string) => {
+    if (currentFetchType !== 'type') {
+      changeType(type);
+      changeFetchType('type');
+      reset();
+    } else if (currentFetchType === 'type' && currentType === type) {
+      changeFetchType('default');
+      reset();
+    } else {
+      changeType(type);
+      reset();
+    }
+  };
+
   return (
-    <div className='hover:scale-[1.12] relative flex justify-center items-center h-[3rem] duration-200'>
+    <button
+      type='button'
+      className={`${
+        currentFetchType === 'type' && currentType === name
+          ? 'scale-[1.12] drop-shadow-md'
+          : 'hover:scale-[1.12]'
+      } relative flex justify-center items-center h-[3rem] duration-200 grow mx-auto`}
+      onClick={() => fetchByType(name)}
+    >
       {types[name as keyof typeof types]}
-    </div>
+    </button>
   );
 };
 

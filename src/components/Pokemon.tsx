@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
+import silhouette from '../assets/images/Silhouette.png';
+
 import CardGetter from './CardGetter';
 import TagGetter from './TagGetter';
 
@@ -15,7 +17,11 @@ const Pokemon = (props: any) => {
     axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`).then((res) => {
       setId(res.data.id);
       setName(res.data.name);
-      setSprite(res.data.sprites.other.home.front_default);
+      if (res.data.sprites.other.home.front_default === null) {
+        if (res.data.sprites.other['official-artwork'].front_default === null)
+          setSprite(silhouette);
+        else setSprite(res.data.sprites.other['official-artwork'].front_default);
+      } else setSprite(res.data.sprites.other.home.front_default);
       setTypes(res.data.types);
     });
   }, [pokemonName]);
@@ -29,7 +35,11 @@ const Pokemon = (props: any) => {
         <img src={sprite} alt={name} className='w-[12.5rem] h-[12.5rem]' />
         <div className='flex flex-col gap-[0.5rem] items-center'>
           <div className='text-[1.25rem] font-bold text-white'>#{id}</div>
-          <div className='text-[1.25rem] font-bold text-white'>
+          <div
+            className={`${
+              name.length > 22 ? 'text-[0.75rem]' : 'text-[1.25rem]'
+            } font-bold text-white text-center`}
+          >
             {name.charAt(0).toUpperCase() + name.slice(1)}
           </div>
         </div>
