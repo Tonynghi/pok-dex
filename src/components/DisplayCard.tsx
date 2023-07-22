@@ -1,14 +1,22 @@
 import { ReactComponent as Close } from '../assets/svgs/close.svg';
 import { ReactComponent as Displaydesktop } from '../assets/svgs/Display Desktop.svg';
+import { useDisplayState } from '../store/Store';
 
 const DisplayCard = () => {
+  const currentDisplayState = useDisplayState((state) => state.currentDisplayState);
+  const changeDisplayState = useDisplayState((state) => state.changeDisplayState);
+
   return (
-    <div className='fixed z-50 flex justify-center items-center w-screen h-screen '>
+    <div
+      className={`${
+        currentDisplayState ? 'fixed' : 'hidden'
+      } z-50 flex justify-center items-center w-screen h-screen `}
+    >
       <div
         aria-hidden
         className='absolute w-screen h-screen bg-black opacity-75 z-0'
         onClick={() => {
-          console.log('off');
+          changeDisplayState(false);
         }}
       />
       <div className='relative z-10'>
@@ -17,7 +25,7 @@ const DisplayCard = () => {
           <Close
             className='cursor-pointer'
             onClick={() => {
-              console.log('off');
+              changeDisplayState(false);
             }}
           />
         </div>

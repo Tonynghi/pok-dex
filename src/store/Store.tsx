@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { EvolutionChain, Pokemon } from '../types';
+
 interface PageState {
   currentPage: number;
   increase: () => void;
@@ -55,4 +57,57 @@ const useGenState = create<GenState>()((set) => ({
   },
 }));
 
-export { usePageState, useFetchTypeState, useTypeState, useGenState };
+const SampleEvolutionChain: EvolutionChain = {
+  first: [],
+  second: [],
+  third: [],
+};
+
+const samplePokemon: Pokemon = {
+  Name: 'sample',
+  Id: 'sample',
+  Sprite: 'sample',
+  IsLegendary: false, // species
+  Type: ['sample'],
+  Height: 0,
+  Weight: 0,
+  Stats: [],
+  Abilities: ['sample'],
+  Evolution: SampleEvolutionChain, // species
+  Habitat: 'sample', // species
+  Moves: ['sample'],
+};
+
+interface PokemonState {
+  currentPokemon: Pokemon;
+  changePokemon: (pokemon: Pokemon) => void;
+}
+
+const usePokemonState = create<PokemonState>()((set) => ({
+  currentPokemon: samplePokemon,
+  changePokemon: (pokemon) => {
+    set(() => ({ currentPokemon: pokemon }));
+    console.log(pokemon);
+  },
+}));
+
+interface DisplayState {
+  currentDisplayState: boolean;
+  changeDisplayState: (displayState: boolean) => void;
+}
+
+const useDisplayState = create<DisplayState>()((set) => ({
+  currentDisplayState: false,
+  changeDisplayState: (displayState) => {
+    set(() => ({ currentDisplayState: displayState }));
+  },
+}));
+
+export {
+  usePageState,
+  useFetchTypeState,
+  useTypeState,
+  useGenState,
+  usePokemonState,
+  useDisplayState,
+};

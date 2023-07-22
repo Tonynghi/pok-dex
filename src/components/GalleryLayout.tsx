@@ -5,7 +5,7 @@ const GalleryLayout = (props: any) => {
   return (
     <div className='flex justify-center '>
       <div className='grid xl:grid-cols-4 mdl:grid-cols-3 sml:grid-cols-2 gap-[5rem]'>
-        {pokemonList.map((x: any) => (
+        {pokemonList.map((x: string) => (
           <div key={x}>
             <Pokemon pokemonName={x} />
           </div>
