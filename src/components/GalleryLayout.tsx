@@ -1,13 +1,18 @@
-import Pokemon from './Pokemon';
+import { Pokemon } from '../types';
 
-const GalleryLayout = (props: any) => {
-  const { pokemonList } = props;
+import PokemonComponent from './Pokemon';
+
+export type GalleryLayoutProps = {
+  pokemonList: Array<Pokemon>;
+};
+
+const GalleryLayout = ({ pokemonList }: GalleryLayoutProps) => {
   return (
     <div className='flex justify-center '>
       <div className='grid xl:grid-cols-4 mdl:grid-cols-3 sml:grid-cols-2 gap-[5rem]'>
-        {pokemonList.map((x: string) => (
-          <div key={x}>
-            <Pokemon pokemonName={x} />
+        {pokemonList.map((pokemon: Pokemon) => (
+          <div key={pokemon.id}>
+            <PokemonComponent pokemon={pokemon} />
           </div>
         ))}
       </div>

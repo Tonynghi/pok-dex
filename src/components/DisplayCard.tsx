@@ -21,7 +21,7 @@ const DisplayCard = () => {
       />
       <div className='relative z-10'>
         <Displaydesktop className='w-[43.75rem] h-[18.75rem]' />
-        <div className='absolute top-[0.75rem] right-[0.75rem] w-[1.25rem] h-[1.25rem] rounded-full bg-secondary500 z-10 flex justify-center items-center '>
+        <div className='absolute top-[0.75rem] right-[0.75rem] w-[1.25rem] h-[1.25rem] rounded-full bg-secondary500 z-10 flex justify-center items-center'>
           <Close
             className='cursor-pointer'
             onClick={() => {
