@@ -1,11 +1,15 @@
 import Slider from 'react-slick';
 
 import { ReactComponent as Arrow } from '../assets/svgs/Vector.svg';
+import { FilterHandlerProps } from '../types';
 
-import TypeGetter from './TypeGetter';
+import TypePicker from './TypePicker';
 
-const NextButton = (props: any) => {
-  const { onClick } = props;
+type NavButtonProps = {
+  onClick: () => void;
+};
+
+const NextButton = ({ onClick }: NavButtonProps) => {
   return (
     <button
       style={{ aspectRatio: 1 / 1 }}
@@ -18,8 +22,7 @@ const NextButton = (props: any) => {
   );
 };
 
-const PrevButton = (props: any) => {
-  const { onClick } = props;
+const PrevButton = ({ onClick }: NavButtonProps) => {
   return (
     <button
       style={{ aspectRatio: 1 / 1 }}
@@ -32,7 +35,32 @@ const PrevButton = (props: any) => {
   );
 };
 
-const TypeCarousel = () => {
+type TypeCarouselProps = {
+  filterHandler: FilterHandlerProps;
+};
+
+const TypeCarousel = ({ filterHandler }: TypeCarouselProps) => {
+  const typeArray: Array<string> = [
+    'normal',
+    'fighting',
+    'flying',
+    'grass',
+    'fire',
+    'water',
+    'electric',
+    'ice',
+    'rock',
+    'ground',
+    'steel',
+    'poison',
+    'bug',
+    'psychic',
+    'dark',
+    'ghost',
+    'dragon',
+    'fairy',
+  ];
+
   return (
     <Slider
       dots={false}
@@ -41,8 +69,8 @@ const TypeCarousel = () => {
       speed={500}
       slidesToShow={9}
       slidesToScroll={9}
-      nextArrow={<NextButton />}
-      prevArrow={<PrevButton />}
+      nextArrow={<NextButton onClick={() => console.log('next')} />}
+      prevArrow={<PrevButton onClick={() => console.log('prev')} />}
       className='flex'
       responsive={[
         {
@@ -68,23 +96,25 @@ const TypeCarousel = () => {
         },
       ]}
     >
-      <TypeGetter name='normal' />
-      <TypeGetter name='fighting' />
-      <TypeGetter name='flying' />
-      <TypeGetter name='fire' />
-      <TypeGetter name='grass' />
-      <TypeGetter name='electric' />
-      <TypeGetter name='ice' />
-      <TypeGetter name='rock' />
-      <TypeGetter name='ground' />
-      <TypeGetter name='steel' />
-      <TypeGetter name='poison' />
-      <TypeGetter name='bug' />
-      <TypeGetter name='psychic' />
-      <TypeGetter name='dark' />
-      <TypeGetter name='ghost' />
-      <TypeGetter name='dragon' />
-      <TypeGetter name='fairy' />
+      {typeArray.map((type: string) => (
+        <TypePicker
+          key={type}
+          type={type}
+          currentType={filterHandler.getCurrentType()}
+          currentFilter={filterHandler.getCurrentFilter()}
+          onClick={() => {
+            if (
+              filterHandler.getCurrentFilter() === 'type' &&
+              filterHandler.getCurrentType() === type
+            ) {
+              filterHandler.changeCurrentFilter('none');
+            } else {
+              filterHandler.changeCurrentFilter('type');
+              filterHandler.changeCurrentType(type);
+            }
+          }}
+        />
+      ))}
     </Slider>
   );
 };

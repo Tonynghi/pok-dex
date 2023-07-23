@@ -22,7 +22,7 @@ const PageButton = ({ page, selectedPage, onClick }: PageButtonProps) => {
   );
 };
 
-export type PageChangeHandler = {
+export type PageChangeHandlerProps = {
   getCurrentPage: () => number;
   changePage: (page: number) => void;
   changePreviousPage: () => void;
@@ -32,7 +32,7 @@ export type PageChangeHandler = {
 type PaginationProps = {
   count: number;
   countPerPage: number;
-  pageChangeHandler: PageChangeHandler;
+  pageChangeHandler: PageChangeHandlerProps;
 };
 
 const Pagination = ({ count, countPerPage, pageChangeHandler }: PaginationProps) => {

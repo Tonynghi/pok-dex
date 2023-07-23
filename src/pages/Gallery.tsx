@@ -1,20 +1,43 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-import GenBar from '../components/GenBar';
-import { PageChangeHandler } from '../components/Pagination';
-import PokeCarousel from '../components/PokeCarousel';
+import GalleryLayout from '../components/GalleryLayout';
+import GenPicker from '../components/GenPicker';
+import Pagination, { PageChangeHandlerProps } from '../components/Pagination';
 import TypeCarousel from '../components/TypeCarousel';
-import { Pokemon } from '../types';
+import { Pokemon, FilterHandlerProps } from '../types';
 
 const Gallery = () => {
+  const [currentFilter, setCurrentFilter] = useState('none');
+  const [currentType, setCurrentType] = useState('normal');
+  const [currentGen, setCurrentGen] = useState(1);
+
+  const filterHandler: FilterHandlerProps = {
+    getCurrentFilter: () => {
+      return currentFilter;
+    },
+    getCurrentType: () => {
+      return currentType;
+    },
+    getCurrentGen: () => {
+      return currentGen;
+    },
+    changeCurrentFilter: (filter) => setCurrentFilter(filter),
+    changeCurrentType: (type) => setCurrentType(type),
+    changeCurrentGen: (gen) => setCurrentGen(gen),
+  };
+
   const [count, setCount] = useState(0);
+  const countLimiter = (estimatedCount: number): number => {
+    if (estimatedCount > count) return count;
+    return estimatedCount;
+  };
   const [pokemonList, setPokemonList] = useState<Array<Pokemon>>([]);
   const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const pageChangeHandler: PageChangeHandler = {
+  const pageChangeHandler: PageChangeHandlerProps = {
     getCurrentPage: () => {
       return currentPage;
     },
@@ -41,11 +64,54 @@ const Gallery = () => {
     );
   };
 
+  const fetchPokemonListByGen = async () => {
+    const { data: fetchResults } = await axios.get<{
+      pokemon_species: Array<{ name: string; url: string }>;
+    }>(`https://pokeapi.co/api/v2/generation/${currentGen}`);
+
+    setLoading(false);
+    setCount(fetchResults.pokemon_species.length);
+    return Promise.all<Array<Promise<Pokemon>>>(
+      fetchResults.pokemon_species
+        .slice(offset, countLimiter(currentPage * countPerPage))
+        .map(async (pokeInfo) => {
+          return (await axios.get<Pokemon>(`https://pokeapi.co/api/v2/pokemon/${pokeInfo.name}`))
+            .data;
+        })
+    );
+  };
+
+  const fetchPokemonListByType = async () => {
+    const { data: fetchResults } = await axios.get<{
+      pokemon: Array<{ pokemon: { name: string; url: string }; slot: number }>;
+    }>(`https://pokeapi.co/api/v2/type/${currentType}`);
+
+    setLoading(false);
+    setCount(fetchResults.pokemon.length);
+    return Promise.all<Array<Promise<Pokemon>>>(
+      fetchResults.pokemon
+        .slice(offset, countLimiter(currentPage * countPerPage))
+        .map(async (pokeInfo) => {
+          return (await axios.get<Pokemon>(pokeInfo.pokemon.url)).data;
+        })
+    );
+  };
+
   const getPokemonList = async () => {
     setLoading(true);
-    console.log(await fetchPokemonList());
-    const fetchList = await fetchPokemonList();
-    setPokemonList(fetchList);
+    if (currentFilter === 'none') {
+      console.log(await fetchPokemonList());
+      const fetchList = await fetchPokemonList();
+      setPokemonList(fetchList);
+    } else if (currentFilter === 'gen') {
+      console.log(await fetchPokemonListByGen());
+      const fetchList = await fetchPokemonListByGen();
+      setPokemonList(fetchList);
+    } else {
+      console.log(await fetchPokemonListByType());
+      const fetchList = await fetchPokemonListByType();
+      setPokemonList(fetchList);
+    }
   };
 
   useEffect(() => {
@@ -73,7 +139,7 @@ const Gallery = () => {
     //   });
     // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
+  }, [currentPage, currentFilter, currentGen, currentType]);
 
   if (loading)
     return (
@@ -83,17 +149,11 @@ const Gallery = () => {
     );
 
   return (
-    <div>
-      <TypeCarousel />
-      <GenBar />
-      <div>
-        <PokeCarousel
-          count={count}
-          countPerPage={countPerPage}
-          pokemonList={pokemonList}
-          pageChangeHandler={pageChangeHandler}
-        />
-      </div>
+    <div className='relative top-[15rem] flex flex-col gap-[2.5rem] px-[1.25rem] lg:px-[5rem]'>
+      <TypeCarousel filterHandler={filterHandler} />
+      <GenPicker filterHandler={filterHandler} />
+      <GalleryLayout pokemonList={pokemonList} />
+      <Pagination count={count} countPerPage={countPerPage} pageChangeHandler={pageChangeHandler} />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useFetchTypeState, useGenState, usePageState } from '../store/Store';
+import { FilterHandlerProps } from '../types';
 
 const int2roman = (original: number): string => {
   if (original < 1 || original > 3999) {
@@ -12,7 +12,6 @@ const int2roman = (original: number): string => {
     ['M', 'MM', 'MMM'], // 1000-3000
   ];
 
-  // TODO: Could expand to support fractions, simply rounding for now
   const digits = Math.round(original).toString().split('');
   let position = digits.length - 1;
 
@@ -27,60 +26,59 @@ const int2roman = (original: number): string => {
   }, '');
 };
 
-type GenProps = {
+type GenButtonProps = {
   gen: number;
+  currentGen: number;
+  currentFilter: string;
+  onClick: () => void;
 };
 
-const GenButton = ({ gen }: GenProps) => {
-  const currentFetchType = useFetchTypeState((state) => state.currentFetchType);
-  const currentGen = useGenState((state) => state.currentGen);
-  const changeFetchType = useFetchTypeState((state) => state.changeFetchType);
-  const changeGen = useGenState((state) => state.changeGen);
-  const reset = usePageState((state) => state.reset);
-
-  const fetchByGen = (toGen: string) => {
-    if (currentFetchType !== 'gen') {
-      changeGen(toGen);
-      changeFetchType('gen');
-      reset();
-    } else if (currentFetchType === 'gen' && currentGen === toGen) {
-      changeFetchType('default');
-      reset();
-    } else {
-      changeGen(toGen);
-      reset();
-    }
-  };
-
+const GenButton = ({ gen, currentGen, currentFilter, onClick }: GenButtonProps) => {
   return (
     <button
       type='button'
       className={`${
-        currentFetchType === 'gen' && currentGen === gen.toString()
+        currentFilter === 'gen' && currentGen === gen
           ? 'bg-primary hover:bg-primary700 text-white'
           : 'border-2 border-black bg-white hover:bg-black text-black hover:text-white'
       } w-[2.5rem] aspect-ratio-1 flex justify-center items-center rounded-full duration-200 text-[1rem]  font-bold`}
-      onClick={() => fetchByGen(gen.toString())}
+      onClick={onClick}
     >
       {/* {gens[gen as keyof typeof gens]} */ int2roman(gen)}
     </button>
   );
 };
 
-const GenBar = () => {
+type GenPickerProps = {
+  filterHandler: FilterHandlerProps;
+};
+
+const GenPicker = ({ filterHandler }: GenPickerProps) => {
+  const genArray: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
   return (
     <div className='w-full h-[2.5rem] flex flex-row justify-center gap-[0.75rem] relative self-center'>
-      <GenButton gen={1} />
-      <GenButton gen={2} />
-      <GenButton gen={3} />
-      <GenButton gen={4} />
-      <GenButton gen={5} />
-      <GenButton gen={6} />
-      <GenButton gen={7} />
-      <GenButton gen={8} />
-      <GenButton gen={9} />
+      {genArray.map((gen: number) => (
+        <GenButton
+          key={gen}
+          gen={gen}
+          currentGen={filterHandler.getCurrentGen()}
+          currentFilter={filterHandler.getCurrentFilter()}
+          onClick={() => {
+            if (
+              filterHandler.getCurrentFilter() === 'gen' &&
+              filterHandler.getCurrentGen() === gen
+            ) {
+              filterHandler.changeCurrentFilter('none');
+            } else {
+              filterHandler.changeCurrentFilter('gen');
+              filterHandler.changeCurrentGen(gen);
+            }
+          }}
+        />
+      ))}
     </div>
   );
 };
 
-export default GenBar;
+export default GenPicker;

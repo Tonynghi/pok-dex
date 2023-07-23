@@ -16,9 +16,8 @@ import { ReactComponent as Psychic } from '../assets/svgs/psychic.svg';
 import { ReactComponent as Rock } from '../assets/svgs/rock.svg';
 import { ReactComponent as Steel } from '../assets/svgs/steel.svg';
 import { ReactComponent as Water } from '../assets/svgs/water.svg';
-import { useTypeState, useFetchTypeState, usePageState } from '../store/Store';
 
-const types = {
+const typeIcons = {
   bug: <Bug className='typeIcon' />,
   dark: <Dark className='typeIcon' />,
   dragon: <Dragon className='typeIcon' />,
@@ -39,42 +38,27 @@ const types = {
   water: <Water className='typeIcon' />,
 };
 
-const TypeGetter = (props: any) => {
-  const { name } = props;
+type TypePickerProps = {
+  type: string;
+  currentType: string;
+  currentFilter: string;
+  onClick: () => void;
+};
 
-  const currentFetchType = useFetchTypeState((state) => state.currentFetchType);
-  const currentType = useTypeState((state) => state.currentType);
-  const changeFetchType = useFetchTypeState((state) => state.changeFetchType);
-  const changeType = useTypeState((state) => state.changeType);
-  const reset = usePageState((state) => state.reset);
-
-  const fetchByType = (type: string) => {
-    if (currentFetchType !== 'type') {
-      changeType(type);
-      changeFetchType('type');
-      reset();
-    } else if (currentFetchType === 'type' && currentType === type) {
-      changeFetchType('default');
-      reset();
-    } else {
-      changeType(type);
-      reset();
-    }
-  };
-
+const TypePicker = ({ type, currentType, currentFilter, onClick }: TypePickerProps) => {
   return (
     <button
       type='button'
       className={`${
-        currentFetchType === 'type' && currentType === name
+        currentFilter === 'type' && currentType === type
           ? 'scale-[1.12] drop-shadow-md'
           : 'hover:scale-[1.12]'
       } relative flex justify-center items-center h-[3rem] duration-200 grow mx-auto`}
-      onClick={() => fetchByType(name)}
+      onClick={onClick}
     >
-      {types[name as keyof typeof types]}
+      {typeIcons[type as keyof typeof typeIcons]}
     </button>
   );
 };
 
-export default TypeGetter;
+export default TypePicker;

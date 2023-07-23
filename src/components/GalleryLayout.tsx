@@ -1,6 +1,6 @@
 import { Pokemon } from '../types';
 
-import PokemonComponent from './Pokemon';
+import PokemonCard from './PokemonCard';
 
 export type GalleryLayoutProps = {
   pokemonList: Array<Pokemon>;
@@ -12,7 +12,7 @@ const GalleryLayout = ({ pokemonList }: GalleryLayoutProps) => {
       <div className='grid xl:grid-cols-4 mdl:grid-cols-3 sml:grid-cols-2 gap-[5rem]'>
         {pokemonList.map((pokemon: Pokemon) => (
           <div key={pokemon.id}>
-            <PokemonComponent pokemon={pokemon} />
+            <PokemonCard pokemon={pokemon} />
           </div>
         ))}
       </div>

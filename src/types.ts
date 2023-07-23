@@ -1,12 +1,10 @@
-type Stat = {
-  name: string;
-  url: string;
-};
-
-type StatObj = {
-  base_stat: number;
-  effort: number;
-  stat: Stat;
+export type FilterHandlerProps = {
+  getCurrentFilter: () => string;
+  getCurrentType: () => string;
+  getCurrentGen: () => number;
+  changeCurrentFilter: (filter: string) => void;
+  changeCurrentType: (type: string) => void;
+  changeCurrentGen: (gen: number) => void;
 };
 
 export type EvolutionChain = {
@@ -40,7 +38,7 @@ export type Pokemon = {
   types: Array<PokemonType>;
   height: number;
   weight: number;
-  stats: StatObj[];
+  stats: Array<{ base_state: number; effort: number; stat: { name: string; url: string } }>;
   abilities: string[];
   evolution: EvolutionChain; // species
   habitat: string; // species
