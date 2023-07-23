@@ -1,24 +1,30 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-import DisplayCard from '../components/DisplayCard';
 import GenBar from '../components/GenBar';
+import { PageChangeHandler } from '../components/Pagination';
 import PokeCarousel from '../components/PokeCarousel';
 import TypeCarousel from '../components/TypeCarousel';
-import { usePageState } from '../store/Store';
 import { Pokemon } from '../types';
 
 const Gallery = () => {
-  const countPerPage = 12;
   const [count, setCount] = useState(0);
   const [pokemonList, setPokemonList] = useState<Array<Pokemon>>([]);
   const [loading, setLoading] = useState(true);
 
-  // const fetchType = useFetchTypeState((state) => state.currentFetchType);
-  // const type = useTypeState((state) => state.currentType);
-  // const gen = useGenState((state) => state.currentGen);
-  const page = usePageState((state) => state.currentPage);
-  const offset = (page - 1) * countPerPage;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const pageChangeHandler: PageChangeHandler = {
+    getCurrentPage: () => {
+      return currentPage;
+    },
+    changePage: (toPage) => setCurrentPage(toPage),
+    changePreviousPage: () => setCurrentPage(currentPage - 1),
+    changeNextPage: () => setCurrentPage(currentPage + 1),
+  };
+
+  const countPerPage = 12;
+  const offset = (currentPage - 1) * countPerPage;
 
   const fetchPokemonList = async () => {
     const { data: fetchResults } = await axios.get<{
@@ -66,7 +72,8 @@ const Gallery = () => {
     //     );
     //   });
     // }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   if (loading)
     return (
@@ -77,11 +84,15 @@ const Gallery = () => {
 
   return (
     <div>
-      <DisplayCard />
       <TypeCarousel />
       <GenBar />
       <div>
-        <PokeCarousel count={count} countPerPage={countPerPage} pokemonList={pokemonList} />
+        <PokeCarousel
+          count={count}
+          countPerPage={countPerPage}
+          pokemonList={pokemonList}
+          pageChangeHandler={pageChangeHandler}
+        />
       </div>
     </div>
   );
