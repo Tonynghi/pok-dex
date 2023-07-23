@@ -26,7 +26,16 @@ export type PokemonType = {
 export type Pokemon = {
   name: string;
   id: string;
-  sprite: string;
+  sprites: {
+    other: {
+      home: {
+        front_default: string;
+      };
+      'official-artwork': {
+        front_default: string;
+      };
+    };
+  };
   isLegendary: boolean; // species
   types: Array<PokemonType>;
   height: number;
