@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 
 import GalleryLayout from '../components/GalleryLayout';
 import GenPicker from '../components/GenPicker';
-import Modal, { ModalHandlerProps } from '../components/Modal';
+import Modal from '../components/Modal';
 import Pagination, { PageChangeHandlerProps } from '../components/Pagination';
 import TypeCarousel from '../components/TypeCarousel';
-import { Pokemon, FilterHandlerProps } from '../types';
+import { Pokemon, FilterHandlerProps, ModalHandlerProps } from '../types';
 
 const Gallery = () => {
   const [currentFilter, setCurrentFilter] = useState('none');
@@ -47,15 +47,72 @@ const Gallery = () => {
     changeNextPage: () => setCurrentPage(currentPage + 1),
   };
 
-  const [ModalVisibility, setModalVisibility] = useState(true);
-  // const [ModalPokemon, setModalPokemon] = useState('none');
+  const [modalVisibility, setModalVisibility] = useState(false);
+  const [modalPokemonName, setModalName] = useState('bulbasaur');
+  const [modalPokemon, setModalPokemon] = useState<Array<Pokemon>>([
+    {
+      name: '',
+      id: '',
+      sprites: {
+        other: {
+          home: {
+            front_default: '',
+          },
+          'official-artwork': {
+            front_default: '',
+          },
+        },
+      },
+      is_legendary: false, // species
+      is_mythical: false,
+      types: [
+        {
+          slot: 0,
+          type: {
+            name: '',
+            url: '',
+          },
+        },
+      ],
+      height: 0,
+      weight: 0,
+      stats: [{ base_state: 0, effort: 0, stat: { name: '', url: '' } }],
+      abilities: [''],
+      chain: {
+        evolution_details: [''],
+        evolves_to: [
+          {
+            evolution_details: [''],
+            evolves_to: [
+              {
+                evolution_details: [''],
+                evolves_to: [{}],
+                is_baby: false,
+                species: { name: '', url: '' },
+              },
+            ],
+            is_baby: false,
+            species: { name: '', url: '' },
+          },
+        ],
+        is_baby: false,
+        species: { name: '', url: '' },
+      }, // species + evolution-chain
+      habitat: { name: '', url: '' }, // species
+      moves: [],
+    },
+  ]);
 
   const modalHandler: ModalHandlerProps = {
     getVisibility: () => {
-      return ModalVisibility;
+      return modalVisibility;
     },
     turnOff: () => setModalVisibility(false),
     turnOn: () => setModalVisibility(true),
+    fetchName: (name) => setModalName(name),
+    getModalPokemon: () => {
+      return modalPokemon;
+    },
   };
 
   const countPerPage = 12;
@@ -109,6 +166,30 @@ const Gallery = () => {
     );
   };
 
+  const fetchModalPokemon = async () => {
+    const fetchFromPokemon = async () => {
+      return (await axios.get<Pokemon>(`https://pokeapi.co/api/v2/pokemon/${modalPokemonName}`))
+        .data;
+    };
+    const fetchFromPokemonSpecies = async () => {
+      return (
+        await axios.get<Pokemon>(`https://pokeapi.co/api/v2/pokemon-species/${modalPokemonName}`)
+      ).data;
+    };
+    const fetchFromEvolutionchain = async () => {
+      const { data: fetchResults } = await axios.get<{ evolution_chain: { url: string } }>(
+        `https://pokeapi.co/api/v2/pokemon-species/${modalPokemonName}`
+      );
+      return (await axios.get<Pokemon>(fetchResults.evolution_chain.url)).data;
+    };
+
+    return Promise.all<Array<Promise<Pokemon>>>([
+      fetchFromPokemon(),
+      fetchFromPokemonSpecies(),
+      fetchFromEvolutionchain(),
+    ]);
+  };
+
   const getPokemonList = async () => {
     setLoading(true);
     if (currentFilter === 'none') {
@@ -126,32 +207,21 @@ const Gallery = () => {
     }
   };
 
+  const getModalPokemonInfo = async () => {
+    console.log(await fetchModalPokemon());
+    const ModalPokemonInfo = await fetchModalPokemon();
+    setModalPokemon(ModalPokemonInfo);
+  };
+
   useEffect(() => {
     getPokemonList();
-    // if (fetchType === 'default') {
-    // } else if (fetchType === 'type') {
-    //   axios.get(`https://pokeapi.co/api/v2/type/${type}`).then((res) => {
-    //     setLoading(false);
-    //     setCount(res.data.pokemon.length);
-    //     setPokemonList(
-    //       res.data.pokemon
-    //         .slice(offset, countLimiter(page * limit))
-    //         .map((poke: any) => poke.pokemon.name)
-    //     );
-    //   });
-    // } else if (fetchType === 'gen') {
-    //   axios.get(`https://pokeapi.co/api/v2/generation/${gen}`).then((res) => {
-    //     setLoading(false);
-    //     setCount(res.data.pokemon_species.length);
-    //     setPokemonList(
-    //       res.data.pokemon_species
-    //         .slice(offset, countLimiter(page * limit))
-    //         .map((poke: any) => poke.name)
-    //     );
-    //   });
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, currentFilter, currentGen, currentType]);
+
+  useEffect(() => {
+    getModalPokemonInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalVisibility]);
 
   if (loading)
     return (

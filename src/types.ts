@@ -34,13 +34,47 @@ export type Pokemon = {
       };
     };
   };
-  isLegendary: boolean; // species
+  is_legendary: boolean; // species
+  is_mythical: boolean; // species
   types: Array<PokemonType>;
   height: number;
   weight: number;
   stats: Array<{ base_state: number; effort: number; stat: { name: string; url: string } }>;
   abilities: string[];
-  evolution: EvolutionChain; // species
-  habitat: string; // species
-  moves: string[];
+  chain: {
+    evolution_details: Array<string>;
+    evolves_to: Array<{
+      evolution_details: Array<string>;
+      evolves_to: Array<{
+        evolution_details: Array<string>;
+        evolves_to: Array<{}>;
+        is_baby: boolean;
+        species: { name: string; url: string };
+      }>;
+      is_baby: boolean;
+      species: { name: string; url: string };
+    }>;
+    is_baby: boolean;
+    species: { name: string; url: string };
+  }; // species + evolution-chain
+  habitat: { name: string; url: string }; // species
+  moves: Array<{
+    move: { name: string; url: string };
+    version_group_details: Array<{
+      level_learned_at: number;
+      move_learn_method: { name: string; url: string };
+      version_group: {
+        name: string;
+        url: string;
+      };
+    }>;
+  }>;
+};
+
+export type ModalHandlerProps = {
+  getVisibility: () => boolean;
+  turnOn: () => void;
+  turnOff: () => void;
+  fetchName: (name: string) => void;
+  getModalPokemon: () => Array<Pokemon>;
 };

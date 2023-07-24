@@ -1,8 +1,7 @@
 import silhouette from '../assets/images/Silhouette.png';
-import { Pokemon, PokemonType } from '../types';
+import { Pokemon, PokemonType, ModalHandlerProps } from '../types';
 
 import CardGetter from './CardGetter';
-import { ModalHandlerProps } from './Modal';
 import TagGetter from './TagGetter';
 
 export type PokemonCardProps = {

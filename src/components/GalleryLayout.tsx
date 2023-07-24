@@ -1,6 +1,5 @@
-import { Pokemon } from '../types';
+import { Pokemon, ModalHandlerProps } from '../types';
 
-import { ModalHandlerProps } from './Modal';
 import PokemonCard from './PokemonCard';
 
 export type GalleryLayoutProps = {

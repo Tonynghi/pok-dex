@@ -1,8 +1,4 @@
-export type ModalHandlerProps = {
-  getVisibility: () => boolean;
-  turnOn: () => void;
-  turnOff: () => void;
-};
+import { ModalHandlerProps } from '../types';
 
 type ModalProps = {
   modalHandler: ModalHandlerProps;
