@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 import GalleryLayout from '../components/GalleryLayout';
 import GenPicker from '../components/GenPicker';
+import Modal, { ModalHandlerProps } from '../components/Modal';
 import Pagination, { PageChangeHandlerProps } from '../components/Pagination';
 import TypeCarousel from '../components/TypeCarousel';
 import { Pokemon, FilterHandlerProps } from '../types';
@@ -44,6 +45,17 @@ const Gallery = () => {
     changePage: (toPage) => setCurrentPage(toPage),
     changePreviousPage: () => setCurrentPage(currentPage - 1),
     changeNextPage: () => setCurrentPage(currentPage + 1),
+  };
+
+  const [ModalVisibility, setModalVisibility] = useState(true);
+  // const [ModalPokemon, setModalPokemon] = useState('none');
+
+  const modalHandler: ModalHandlerProps = {
+    getVisibility: () => {
+      return ModalVisibility;
+    },
+    turnOff: () => setModalVisibility(false),
+    turnOn: () => setModalVisibility(true),
   };
 
   const countPerPage = 12;
@@ -149,11 +161,20 @@ const Gallery = () => {
     );
 
   return (
-    <div className='relative top-[15rem] flex flex-col gap-[2.5rem] px-[1.25rem] lg:px-[5rem]'>
-      <TypeCarousel filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
-      <GenPicker filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
-      <GalleryLayout pokemonList={pokemonList} />
-      <Pagination count={count} countPerPage={countPerPage} pageChangeHandler={pageChangeHandler} />
+    <div>
+      <Modal modalHandler={modalHandler}>
+        <div className='text-white'>testing</div>
+      </Modal>
+      <div className='relative top-[15rem] flex flex-col gap-[2.5rem] px-[1.25rem] lg:px-[5rem]'>
+        <TypeCarousel filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
+        <GenPicker filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
+        <GalleryLayout pokemonList={pokemonList} modalHandler={modalHandler} />
+        <Pagination
+          count={count}
+          countPerPage={countPerPage}
+          pageChangeHandler={pageChangeHandler}
+        />
+      </div>
     </div>
   );
 };

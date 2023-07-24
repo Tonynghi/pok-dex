@@ -2,13 +2,15 @@ import silhouette from '../assets/images/Silhouette.png';
 import { Pokemon, PokemonType } from '../types';
 
 import CardGetter from './CardGetter';
+import { ModalHandlerProps } from './Modal';
 import TagGetter from './TagGetter';
 
 export type PokemonCardProps = {
   pokemon: Pokemon;
+  modalHandler: ModalHandlerProps;
 };
 
-const PokemonCard = ({ pokemon }: PokemonCardProps) => {
+const PokemonCard = ({ pokemon, modalHandler }: PokemonCardProps) => {
   const spriteHandler = (): string => {
     if (pokemon.sprites.other.home.front_default !== null)
       return pokemon.sprites.other.home.front_default;
@@ -22,6 +24,7 @@ const PokemonCard = ({ pokemon }: PokemonCardProps) => {
       type='button'
       className='relative w-[17.5rem] h-[22.5rem]'
       onClick={() => {
+        modalHandler.turnOn();
         // changePokemon(pokemon);
         // changeDisplayState(true);
       }}
