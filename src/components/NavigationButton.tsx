@@ -2,48 +2,34 @@ import { ReactComponent as FirstArr } from '../assets/svgs/FirstArrow.svg';
 import { ReactComponent as LastArr } from '../assets/svgs/LastArrow.svg';
 import { ReactComponent as NextArr } from '../assets/svgs/NextArrow.svg';
 import { ReactComponent as PrevArr } from '../assets/svgs/PrevArrow.svg';
-import { usePageState } from '../store/Store';
 
-const NavigateButton = (props: any) => {
-  const current = usePageState((state) => state.currentPage);
+type NavigateButtonProps = {
+  type: string;
+  currentPage: number;
+  firstPage: number;
+  lastPage: number;
+  onClick: () => void;
+};
 
-  const { type, onClick, last } = props;
-
-  if (type === 'next' && current === last)
-    return (
-      <div
-        aria-label='next'
-        className={`${
-          current === last ? 'opacity-25 cursor-default' : 'hover:bg-secondary50'
-        } w-[1.5rem]  aspect-square sm:w-[2.5rem] flex justify-center rounded-full  duration-200 flex items-center justify-center`}
-      >
-        <NextArr className='hover:fill-secondary50 w-[1rem] aspect-square sm:w-[1.5rem]' />
-      </div>
-    );
-
+const NavigateButton = ({
+  type,
+  currentPage,
+  firstPage,
+  lastPage,
+  onClick,
+}: NavigateButtonProps) => {
   if (type === 'next')
     return (
       <button
         type='button'
         aria-label='next'
         className={`${
-          current === last ? 'opacity-25 cursor-default' : 'hover:bg-secondary50'
+          currentPage === lastPage ? 'opacity-25 cursor-default' : 'hover:bg-secondary50'
         } w-[1.5rem]  aspect-square sm:w-[2.5rem] flex justify-center rounded-full  duration-200 flex items-center justify-center`}
         onClick={onClick}
       >
         <NextArr className='hover:fill-secondary50 w-[1rem] aspect-square sm:w-[1.5rem]' />
       </button>
-    );
-  if (type === 'prev' && current === 1)
-    return (
-      <div
-        aria-label='prev'
-        className={`${
-          current === 1 ? 'opacity-25 cursor-default' : 'hover:bg-secondary50'
-        } w-[1.5rem]  aspect-square sm:w-[2.5rem] flex justify-center rounded-full  duration-200 flex items-center justify-center`}
-      >
-        <PrevArr className='hover:fill-secondary50 w-[1rem] aspect-square sm:w-[1.5rem]' />
-      </div>
     );
   if (type === 'prev')
     return (
@@ -51,7 +37,7 @@ const NavigateButton = (props: any) => {
         type='button'
         aria-label='prev'
         className={`${
-          current === 1 ? 'opacity-25 cursor-default' : 'hover:bg-secondary50'
+          currentPage === firstPage ? 'opacity-25 cursor-default' : 'hover:bg-secondary50'
         } w-[1.5rem]  aspect-square sm:w-[2.5rem] flex justify-center rounded-full  duration-200 flex items-center justify-center`}
         onClick={onClick}
       >

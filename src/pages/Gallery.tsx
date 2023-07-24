@@ -150,8 +150,8 @@ const Gallery = () => {
 
   return (
     <div className='relative top-[15rem] flex flex-col gap-[2.5rem] px-[1.25rem] lg:px-[5rem]'>
-      <TypeCarousel filterHandler={filterHandler} />
-      <GenPicker filterHandler={filterHandler} />
+      <TypeCarousel filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
+      <GenPicker filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
       <GalleryLayout pokemonList={pokemonList} />
       <Pagination count={count} countPerPage={countPerPage} pageChangeHandler={pageChangeHandler} />
     </div>

@@ -1,5 +1,7 @@
 import { FilterHandlerProps } from '../types';
 
+import { PageChangeHandlerProps } from './Pagination';
+
 const int2roman = (original: number): string => {
   if (original < 1 || original > 3999) {
     throw new Error('Error: Input integer limited to 1 through 3,999');
@@ -51,9 +53,10 @@ const GenButton = ({ gen, currentGen, currentFilter, onClick }: GenButtonProps) 
 
 type GenPickerProps = {
   filterHandler: FilterHandlerProps;
+  pageChangeHandler: PageChangeHandlerProps;
 };
 
-const GenPicker = ({ filterHandler }: GenPickerProps) => {
+const GenPicker = ({ filterHandler, pageChangeHandler }: GenPickerProps) => {
   const genArray: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
@@ -70,9 +73,11 @@ const GenPicker = ({ filterHandler }: GenPickerProps) => {
               filterHandler.getCurrentGen() === gen
             ) {
               filterHandler.changeCurrentFilter('none');
+              pageChangeHandler.changePage(1);
             } else {
               filterHandler.changeCurrentFilter('gen');
               filterHandler.changeCurrentGen(gen);
+              pageChangeHandler.changePage(1);
             }
           }}
         />

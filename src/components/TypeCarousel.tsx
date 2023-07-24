@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 import { ReactComponent as Arrow } from '../assets/svgs/Vector.svg';
 import { FilterHandlerProps } from '../types';
 
+import { PageChangeHandlerProps } from './Pagination';
 import TypePicker from './TypePicker';
 
 type NavButtonProps = {
@@ -37,9 +38,10 @@ const PrevButton = ({ onClick }: NavButtonProps) => {
 
 type TypeCarouselProps = {
   filterHandler: FilterHandlerProps;
+  pageChangeHandler: PageChangeHandlerProps;
 };
 
-const TypeCarousel = ({ filterHandler }: TypeCarouselProps) => {
+const TypeCarousel = ({ filterHandler, pageChangeHandler }: TypeCarouselProps) => {
   const typeArray: Array<string> = [
     'normal',
     'fighting',
@@ -108,9 +110,11 @@ const TypeCarousel = ({ filterHandler }: TypeCarouselProps) => {
               filterHandler.getCurrentType() === type
             ) {
               filterHandler.changeCurrentFilter('none');
+              pageChangeHandler.changePage(1);
             } else {
               filterHandler.changeCurrentFilter('type');
               filterHandler.changeCurrentType(type);
+              pageChangeHandler.changePage(1);
             }
           }}
         />

@@ -52,13 +52,20 @@ const Pagination = ({ count, countPerPage, pageChangeHandler }: PaginationProps)
     <div className='relative flex flex-row gap-[0.5rem] sm:gap-[1.25rem] justify-center items-center'>
       <NavigateButton
         type='first'
+        currentPage={pageChangeHandler.getCurrentPage()}
+        firstPage={1}
+        lastPage={numberOfPages}
         onClick={() => pageChangeHandler.changePage(1)}
-        last={numberOfPages}
       />
       <NavigateButton
         type='prev'
-        onClick={() => pageChangeHandler.changePreviousPage()}
-        last={numberOfPages}
+        currentPage={pageChangeHandler.getCurrentPage()}
+        firstPage={1}
+        lastPage={numberOfPages}
+        onClick={() => {
+          if (pageChangeHandler.getCurrentPage() !== 1) pageChangeHandler.changePreviousPage();
+          else console.log('aleardy on first page');
+        }}
       />
       {arrayOfPages.slice(0, 3).map((page: number) => (
         <div key={page}>
@@ -92,13 +99,21 @@ const Pagination = ({ count, countPerPage, pageChangeHandler }: PaginationProps)
       ))}
       <NavigateButton
         type='next'
-        onClick={() => pageChangeHandler.changeNextPage()}
-        last={numberOfPages}
+        currentPage={pageChangeHandler.getCurrentPage()}
+        firstPage={1}
+        lastPage={numberOfPages}
+        onClick={() => {
+          if (pageChangeHandler.getCurrentPage() !== numberOfPages)
+            pageChangeHandler.changeNextPage();
+          else console.log('already on last page');
+        }}
       />
       <NavigateButton
         type='last'
+        currentPage={pageChangeHandler.getCurrentPage()}
+        firstPage={1}
+        lastPage={numberOfPages}
         onClick={() => pageChangeHandler.changePage(numberOfPages)}
-        last={numberOfPages}
       />
     </div>
   );
