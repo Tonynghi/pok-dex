@@ -9,21 +9,22 @@ export type PokemonCardProps = {
   modalHandler: ModalHandlerProps;
 };
 
-const PokemonCard = ({ pokemon, modalHandler }: PokemonCardProps) => {
-  const spriteHandler = (): string => {
-    if (pokemon.sprites.other.home.front_default !== null)
-      return pokemon.sprites.other.home.front_default;
-    if (pokemon.sprites.other['official-artwork'].front_default !== null)
-      return pokemon.sprites.other['official-artwork'].front_default;
-    return silhouette;
-  };
+const spriteHandler = (pokemon: Pokemon): string => {
+  if (pokemon.sprites.other.home.front_default !== null)
+    return pokemon.sprites.other.home.front_default;
+  if (pokemon.sprites.other['official-artwork'].front_default !== null)
+    return pokemon.sprites.other['official-artwork'].front_default;
+  return silhouette;
+};
 
+const PokemonCard = ({ pokemon, modalHandler }: PokemonCardProps) => {
   return (
     <button
       type='button'
       className='relative w-[17.5rem] h-[22.5rem]'
       onClick={() => {
         modalHandler.turnOn();
+        modalHandler.fetchName(pokemon.name);
         // changePokemon(pokemon);
         // changeDisplayState(true);
       }}
@@ -32,7 +33,7 @@ const PokemonCard = ({ pokemon, modalHandler }: PokemonCardProps) => {
         <CardGetter name={pokemon.types[0].type.name} />
       </div>
       <div className='absolute top-0 w-[17.5rem] h-[22.5rem] flex flex-col items-center gap-[1rem] justify-start z-10'>
-        <img src={spriteHandler()} alt={pokemon.name} className='w-[12.5rem] h-[12.5rem]' />
+        <img src={spriteHandler(pokemon)} alt={pokemon.name} className='w-[12.5rem] h-[12.5rem]' />
         <div className='flex flex-col gap-[0.5rem] items-center'>
           <div className='text-[1.25rem] font-bold text-white'>#{pokemon.id}</div>
           <div
@@ -55,4 +56,4 @@ const PokemonCard = ({ pokemon, modalHandler }: PokemonCardProps) => {
   );
 };
 
-export default PokemonCard;
+export { PokemonCard, spriteHandler };

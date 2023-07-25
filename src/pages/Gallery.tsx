@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import GalleryLayout from '../components/GalleryLayout';
 import GenPicker from '../components/GenPicker';
 import Modal from '../components/Modal';
+import ModalCard from '../components/ModalCard';
 import Pagination, { PageChangeHandlerProps } from '../components/Pagination';
 import TypeCarousel from '../components/TypeCarousel';
 import { Pokemon, FilterHandlerProps, ModalHandlerProps } from '../types';
@@ -33,6 +34,7 @@ const Gallery = () => {
     if (estimatedCount > count) return count;
     return estimatedCount;
   };
+
   const [pokemonList, setPokemonList] = useState<Array<Pokemon>>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +50,7 @@ const Gallery = () => {
   };
 
   const [modalVisibility, setModalVisibility] = useState(false);
-  const [modalPokemonName, setModalName] = useState('bulbasaur');
+  const [modalPokemonName, setModalPokemonName] = useState('bulbasaur');
   const [modalPokemon, setModalPokemon] = useState<Array<Pokemon>>([
     {
       name: '',
@@ -63,6 +65,7 @@ const Gallery = () => {
           },
         },
       },
+      flavor_text_entries: [{ flavor_text: '', language: { name: '', url: '' } }],
       is_legendary: false, // species
       is_mythical: false,
       types: [
@@ -76,8 +79,14 @@ const Gallery = () => {
       ],
       height: 0,
       weight: 0,
-      stats: [{ base_state: 0, effort: 0, stat: { name: '', url: '' } }],
-      abilities: [''],
+      stats: [{ base_stat: 0, effort: 0, stat: { name: '', url: '' } }],
+      abilities: [
+        {
+          ability: { name: '', url: '' },
+          is_hidden: false,
+          base_experience: 0,
+        },
+      ],
       chain: {
         evolution_details: [''],
         evolves_to: [
@@ -102,6 +111,7 @@ const Gallery = () => {
       moves: [],
     },
   ]);
+  const [modalLoading, setModalLoading] = useState(true);
 
   const modalHandler: ModalHandlerProps = {
     getVisibility: () => {
@@ -109,9 +119,12 @@ const Gallery = () => {
     },
     turnOff: () => setModalVisibility(false),
     turnOn: () => setModalVisibility(true),
-    fetchName: (name) => setModalName(name),
+    fetchName: (name) => setModalPokemonName(name),
     getModalPokemon: () => {
       return modalPokemon;
+    },
+    getModalLoading: () => {
+      return modalLoading;
     },
   };
 
@@ -124,7 +137,6 @@ const Gallery = () => {
       results: Array<{ url: string; name: string }>;
     }>(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${countPerPage}`);
 
-    setLoading(false);
     setCount(fetchResults.count);
     return Promise.all<Array<Promise<Pokemon>>>(
       fetchResults.results.map(async (pokeInfo) => {
@@ -138,7 +150,6 @@ const Gallery = () => {
       pokemon_species: Array<{ name: string; url: string }>;
     }>(`https://pokeapi.co/api/v2/generation/${currentGen}`);
 
-    setLoading(false);
     setCount(fetchResults.pokemon_species.length);
     return Promise.all<Array<Promise<Pokemon>>>(
       fetchResults.pokemon_species
@@ -155,7 +166,6 @@ const Gallery = () => {
       pokemon: Array<{ pokemon: { name: string; url: string }; slot: number }>;
     }>(`https://pokeapi.co/api/v2/type/${currentType}`);
 
-    setLoading(false);
     setCount(fetchResults.pokemon.length);
     return Promise.all<Array<Promise<Pokemon>>>(
       fetchResults.pokemon
@@ -193,24 +203,23 @@ const Gallery = () => {
   const getPokemonList = async () => {
     setLoading(true);
     if (currentFilter === 'none') {
-      console.log(await fetchPokemonList());
       const fetchList = await fetchPokemonList();
       setPokemonList(fetchList);
     } else if (currentFilter === 'gen') {
-      console.log(await fetchPokemonListByGen());
       const fetchList = await fetchPokemonListByGen();
       setPokemonList(fetchList);
     } else {
-      console.log(await fetchPokemonListByType());
       const fetchList = await fetchPokemonListByType();
       setPokemonList(fetchList);
     }
+    setLoading(false);
   };
 
   const getModalPokemonInfo = async () => {
-    console.log(await fetchModalPokemon());
+    setModalLoading(true);
     const ModalPokemonInfo = await fetchModalPokemon();
     setModalPokemon(ModalPokemonInfo);
+    setModalLoading(false);
   };
 
   useEffect(() => {
@@ -221,7 +230,7 @@ const Gallery = () => {
   useEffect(() => {
     getModalPokemonInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modalVisibility]);
+  }, [modalPokemonName]);
 
   if (loading)
     return (
@@ -233,7 +242,7 @@ const Gallery = () => {
   return (
     <div>
       <Modal modalHandler={modalHandler}>
-        <div className='text-white'>testing</div>
+        <ModalCard modalPokemonInfo={modalPokemon} modalHandler={modalHandler} />
       </Modal>
       <div className='relative top-[15rem] flex flex-col gap-[2.5rem] px-[1.25rem] lg:px-[5rem]'>
         <TypeCarousel filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />

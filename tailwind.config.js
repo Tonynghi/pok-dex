@@ -17,6 +17,15 @@ module.exports = {
         secondary50: '#D7D7D7',
         secondary500: '#717171',
       },
+      keyframes: {
+        progress: {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
+        },
+      },
+      animation: {
+        'progress-bar': 'progress 1.5s ease-out',
+      },
     },
   },
   plugins: [

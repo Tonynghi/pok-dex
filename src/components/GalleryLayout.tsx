@@ -1,6 +1,6 @@
 import { Pokemon, ModalHandlerProps } from '../types';
 
-import PokemonCard from './PokemonCard';
+import { PokemonCard } from './PokemonCard';
 
 export type GalleryLayoutProps = {
   pokemonList: Array<Pokemon>;
