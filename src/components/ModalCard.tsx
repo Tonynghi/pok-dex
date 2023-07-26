@@ -24,6 +24,11 @@ type TabChangeButtonProps = {
   onClick: () => void;
 };
 
+type StatDisplayProps = {
+  name: string;
+  stat: number;
+};
+
 const TabChangeButton = ({ currentTab, name, onClick }: TabChangeButtonProps) => {
   return (
     <button
@@ -36,11 +41,6 @@ const TabChangeButton = ({ currentTab, name, onClick }: TabChangeButtonProps) =>
       {name}
     </button>
   );
-};
-
-type StatDisplayProps = {
-  name: string;
-  stat: number;
 };
 
 const StatDisplay = ({ name, stat }: StatDisplayProps) => {
@@ -116,7 +116,7 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
 
   return (
     <div
-      className='w-[52.5rem] h-[37.5rem] flex flex-wrap flex-col'
+      className='hidden mdl:flex w-[52.5rem] h-[37.5rem] flex-wrap flex-col'
       style={{ backgroundImage: `url('${getModalCard()}')` }}
     >
       <div className='relative w-[52.5rem] h-[25rem] flex flex-row px-[3.75rem] items-center justify-between '>
@@ -242,10 +242,7 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
                       is_baby: boolean;
                       species: { name: string; url: string };
                     }) => (
-                      <div
-                        key={evolve2.species.name}
-                        className='relative relative flex flex-row flex-wrap'
-                      >
+                      <div key={evolve2.species.name} className='relative flex flex-row flex-wrap'>
                         {evolve2.evolves_to.map(
                           (evolve3: {
                             evolution_details: Array<string>;
@@ -262,7 +259,7 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
                       </div>
                     )
                   )}
-                </div>{' '}
+                </div>
               </>
             )}
           </div>

@@ -38,9 +38,11 @@ const types = {
   water: <Water className='typeCard' />,
 };
 
-const CardGetter = (props: any) => {
-  const { name } = props;
+type CardGetterProps = {
+  name: string;
+};
 
+const CardGetter = ({ name }: CardGetterProps) => {
   return <div className=''>{types[name as keyof typeof types]}</div>;
 };
 
