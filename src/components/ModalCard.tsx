@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import next from '../assets/images/NextEvo.png';
 import pokeballIcon from '../assets/images/Pokeball Icon.png';
 import pokedexLegendaryDesktop from '../assets/images/Pokedex Legendary (Desktop).png';
 import pokedexLoadingDesktop from '../assets/images/Pokedex Loading (Desktop).png';
@@ -8,6 +9,7 @@ import pokedexNormalDesktop from '../assets/images/Pokedex Normal (Desktop).png'
 import { ModalHandlerProps, Pokemon, PokemonType } from '../types';
 
 import GetPokemonSprite from './GetPokemonSprite';
+import HabitatPicker from './HabitatPicker';
 import { spriteHandler } from './PokemonCard';
 import TagGetter from './TagGetter';
 
@@ -96,9 +98,25 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
       </div>
     );
 
+  const hasSecondEvolution = (): boolean => {
+    return modalPokemonInfo[2].chain.evolves_to.length > 0;
+  };
+
+  const hasThirdEvolution = (): boolean => {
+    if (!hasSecondEvolution()) return false;
+    let hasThird = false;
+    for (let i = 0; i < modalPokemonInfo[2].chain.evolves_to.length; i += 1) {
+      if (modalPokemonInfo[2].chain.evolves_to[i].evolves_to.length > 0) {
+        hasThird = true;
+        break;
+      }
+    }
+    return hasThird;
+  };
+
   return (
     <div
-      className='w-[52.5rem] h-[37.5rem] flex flex-col'
+      className='w-[52.5rem] h-[37.5rem] flex flex-wrap flex-col'
       style={{ backgroundImage: `url('${getModalCard()}')` }}
     >
       <div className='relative w-[52.5rem] h-[25rem] flex flex-row px-[3.75rem] items-center justify-between '>
@@ -121,7 +139,7 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
                   </div>
                 ))}
               </div>
-              <div className='relative text-white text-base text-center'>{getFlavorText()}</div>
+              <div className='relative text-white text-xs text-center'>{getFlavorText()}</div>
             </div>
             <div className='relative h-[7.25rem] grid grid-cols-4 grid-rows-4 self-start text-white text-base gap-[0.75rem]'>
               <div className='font-bold col-start-1'>ID:</div>
@@ -131,7 +149,13 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
               <div className='font-bold col-start-1'>Weight:</div>
               <div className='col-start-2'>{modalPokemonInfo[0].weight / 10} kg</div>
               <div className='font-bold col-start-1'>Abilities:</div>
-              <div className='flex flex-row gap-[0.75rem] col-span-3'>
+              <div
+                className={`${
+                  modalPokemonInfo[0].abilities.length >= 3
+                    ? 'text-xs items-end col-span-3'
+                    : 'col-span-3'
+                } flex flex-row gap-[0.75rem] col-span-3`}
+              >
                 {modalPokemonInfo[0].abilities.map(
                   (ability: {
                     ability: { name: string; url: string };
@@ -171,19 +195,126 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
           </div>
         )}
         {tab === 'Evolution' && (
-          <div className='relative w-[22.5rem] h-[22.5rem] z-20 flex flex-col justify-between items-center py-[1.25rem] px-[1.25rem]'>
-            <GetPokemonSprite name={modalPokemonInfo[2].chain.species.name} />
-            <div>{}</div>
+          <div className='relative w-[22.5rem] h-[22.5rem] z-20 flex flex-col justify-between items-center py-[1.25rem] px-[1.25rem] overflow-auto'>
+            {hasSecondEvolution() && (
+              <GetPokemonSprite name={modalPokemonInfo[2].chain.species.name} />
+            )}
+            {!hasSecondEvolution() && (
+              <div className='relative text-base text-white grow flex justify-center items-center'>
+                This pokemon does not evolve
+              </div>
+            )}
+            {hasSecondEvolution() && (
+              <>
+                <img src={next} alt='next' className='relative w-[1.5rem] aspect-square' />
+                <div className='relative flex flex-row flex-wrap'>
+                  {modalPokemonInfo[2].chain.evolves_to.map(
+                    (evolve: {
+                      evolution_details: Array<string>;
+                      evolves_to: Array<{
+                        evolution_details: Array<string>;
+                        evolves_to: Array<{}>;
+                        is_baby: boolean;
+                        species: { name: string; url: string };
+                      }>;
+                      is_baby: boolean;
+                      species: { name: string; url: string };
+                    }) => (
+                      <GetPokemonSprite key={evolve.species.name} name={evolve.species.name} />
+                    )
+                  )}
+                </div>
+              </>
+            )}
+            {hasThirdEvolution() && (
+              <>
+                <img src={next} alt='next' className='relative w-[1.5rem] aspect-square' />
+                <div>
+                  {modalPokemonInfo[2].chain.evolves_to.map(
+                    (evolve2: {
+                      evolution_details: Array<string>;
+                      evolves_to: Array<{
+                        evolution_details: Array<string>;
+                        evolves_to: Array<{}>;
+                        is_baby: boolean;
+                        species: { name: string; url: string };
+                      }>;
+                      is_baby: boolean;
+                      species: { name: string; url: string };
+                    }) => (
+                      <div
+                        key={evolve2.species.name}
+                        className='relative relative flex flex-row flex-wrap'
+                      >
+                        {evolve2.evolves_to.map(
+                          (evolve3: {
+                            evolution_details: Array<string>;
+                            evolves_to: Array<{}>;
+                            is_baby: boolean;
+                            species: { name: string; url: string };
+                          }) => (
+                            <GetPokemonSprite
+                              key={evolve3.species.name}
+                              name={evolve3.species.name}
+                            />
+                          )
+                        )}{' '}
+                      </div>
+                    )
+                  )}
+                </div>{' '}
+              </>
+            )}
           </div>
         )}
         {tab === 'Moves' && (
-          <div className='relative w-[22.5rem] h-[22.5rem] z-20 flex flex-col justify-between items-center py-[1.25rem] px-[1.25rem]'>
-            moves
+          <div className='relative w-[22.5rem] h-[22.5rem] z-20 grid grid-cols-2 gap-[1rem] overflow-auto py-[1.25rem] px-[1.25rem]'>
+            {modalPokemonInfo[0].moves.map(
+              (move: {
+                move: { name: string; url: string };
+                version_group_details: Array<{
+                  level_learned_at: number;
+                  move_learn_method: { name: string; url: string };
+                  version_group: {
+                    name: string;
+                    url: string;
+                  };
+                }>;
+              }) => (
+                <div
+                  key={move.move.name}
+                  className='relative w-[9.5rem] h-[2.5rem] flex justify-center items-center bg-[#363636] text-white font-bold text-xs'
+                >
+                  {move.move.name}
+                </div>
+              )
+            )}
           </div>
         )}
         {tab === 'Habitat' && (
-          <div className='relative w-[22.5rem] h-[22.5rem] z-20 flex flex-col justify-between items-center py-[1.25rem] px-[1.25rem]'>
-            habitat
+          <div className='relative w-[22.5rem] h-[22.5rem] z-20 flex flex-col justify-start items-center py-[2.5rem] px-[1.25rem] gap-[2.5rem]'>
+            <img src='' alt='habitat' className='relative w-[12.5rem] aspect-square' />
+            {modalPokemonInfo[1].habitat === null && (
+              <div className='relative text-white font-bold text-base'>No information</div>
+            )}
+            {modalPokemonInfo[1].habitat !== null &&
+              modalPokemonInfo[1].habitat.name === 'rare' && (
+                <>
+                  <HabitatPicker name={modalPokemonInfo[1].habitat.name} />
+                  <div className='relative text-white font-bold text-base'>
+                    This pokemon is rare to be seen
+                  </div>
+                </>
+              )}
+            {modalPokemonInfo[1].habitat !== null &&
+              modalPokemonInfo[1].habitat.name !== 'rare' && (
+                <>
+                  <HabitatPicker name={modalPokemonInfo[1].habitat.name} />
+                  <div className='relative text-white font-bold text-base'>
+                    This pokemon lives in {modalPokemonInfo[1].habitat.name}
+                  </div>
+                </>
+              )}
           </div>
         )}
       </div>

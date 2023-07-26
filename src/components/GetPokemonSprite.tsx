@@ -81,7 +81,7 @@ const GetPokemonSprite = ({ name }: GetPokemonSpriteProps) => {
   useEffect(() => {
     getPokemon();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPokemon]);
+  }, []);
 
   return (
     <div>

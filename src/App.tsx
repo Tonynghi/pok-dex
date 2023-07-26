@@ -18,7 +18,6 @@ const App = () => {
         <Route path='/favorite' element={<Favorite />} />
         <Route path='/account' element={<Account />} />
       </Routes>
-      <Navbar />
     </div>
   );
 };
