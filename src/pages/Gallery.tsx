@@ -7,6 +7,7 @@ import GalleryLayout from '../components/GalleryLayout';
 import GenPicker from '../components/GenPicker';
 import Modal from '../components/Modal';
 import ModalCard from '../components/ModalCard';
+import ModalCardMobile from '../components/ModalCardMobile';
 import Pagination, { PageChangeHandlerProps } from '../components/Pagination';
 import TypeCarousel from '../components/TypeCarousel';
 import { Pokemon, FilterHandlerProps, ModalHandlerProps } from '../types';
@@ -250,6 +251,7 @@ const Gallery = () => {
   return (
     <div>
       <Modal modalHandler={modalHandler}>
+        <ModalCardMobile modalPokemonInfo={modalPokemon} modalHandler={modalHandler} />
         <ModalCard modalPokemonInfo={modalPokemon} modalHandler={modalHandler} />
       </Modal>
       <div className='relative top-[15rem] flex flex-col gap-[2.5rem] px-[1.25rem] lg:px-[5rem]'>

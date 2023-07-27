@@ -13,18 +13,18 @@ import HabitatPicker from './HabitatPicker';
 import { spriteHandler } from './PokemonCard';
 import TagGetter from './TagGetter';
 
-type ModalCardProps = {
+export type ModalCardProps = {
   modalPokemonInfo: Array<Pokemon>;
   modalHandler: ModalHandlerProps;
 };
 
-type TabChangeButtonProps = {
+export type TabChangeButtonProps = {
   currentTab: string;
   name: string;
   onClick: () => void;
 };
 
-type StatDisplayProps = {
+export type StatDisplayProps = {
   name: string;
   stat: number;
 };
@@ -45,6 +45,7 @@ const TabChangeButton = ({ currentTab, name, onClick }: TabChangeButtonProps) =>
 
 const StatDisplay = ({ name, stat }: StatDisplayProps) => {
   const statToBarWidth = (): number => {
+    if (stat > 200) return 160;
     return (stat / 200) * 160;
   };
   return (
@@ -86,7 +87,7 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
   if (modalHandler.getModalLoading())
     return (
       <div
-        className='w-[52.5rem] h-[37.5rem] '
+        className=' hidden mdl:flex w-[52.5rem] h-[37.5rem] '
         style={{ backgroundImage: `url('${pokedexLoadingDesktop}')` }}
       >
         <div className='relative w-[52.5rem] h-[25rem] top-0 flex items-center justify-center text-[#363636] font-bold text-[2.5rem]'>
@@ -290,9 +291,11 @@ const ModalCard = ({ modalPokemonInfo, modalHandler }: ModalCardProps) => {
         )}
         {tab === 'Habitat' && (
           <div className='relative w-[22.5rem] h-[22.5rem] z-20 flex flex-col justify-start items-center py-[2.5rem] px-[1.25rem] gap-[2.5rem]'>
-            <img src='' alt='habitat' className='relative w-[12.5rem] aspect-square' />
             {modalPokemonInfo[1].habitat === null && (
-              <div className='relative text-white font-bold text-base'>No information</div>
+              <>
+                <HabitatPicker name='no-information' />
+                <div className='relative text-white font-bold text-base'>No information</div>
+              </>
             )}
             {modalPokemonInfo[1].habitat !== null &&
               modalPokemonInfo[1].habitat.name === 'rare' && (

@@ -10,7 +10,7 @@
     @apply relative w-[2.5rem] h-[2.5rem];
   }
   .typeTag {
-    @apply relative w-[6.25rem] h-[2.5rem];
+    @apply relative mdl:w-[6.25rem] mdl:h-[2.5rem] w-[3.125rem] h-[1.25rem];
   }
   .typeCard {
     @apply w-[17.5rem] h-[265.26px];

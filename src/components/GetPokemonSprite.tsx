@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import Lottie from 'react-lottie';
 
+import LoadingAnim from '../assets/animation/loading animation.json';
 import { Pokemon } from '../types';
 
 import { spriteHandler } from './PokemonCard';
@@ -68,27 +70,42 @@ const GetPokemonSprite = ({ name }: GetPokemonSpriteProps) => {
     habitat: { name: '', url: '' }, // species
     moves: [],
   });
+  const [loading, setLoading] = useState(true);
+
+  const AnimOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: LoadingAnim,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
 
   const fetchPokemon = async () => {
     return (await axios.get<Pokemon>(`https://pokeapi.co/api/v2/pokemon/${name}`)).data;
   };
 
   const getPokemon = async () => {
+    setLoading(true);
     const pokemon = await fetchPokemon();
     setCurrentPokemon(pokemon);
+    setLoading(false);
   };
 
   useEffect(() => {
     getPokemon().catch((error: any) => console.log(error));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (loading) return <Lottie options={AnimOptions} height={80} width={80} />;
 
   return (
     <div>
       <img
         src={spriteHandler(currentPokemon)}
         alt={currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}
-        className='relative w-[5rem] aspect-square z-20'
+        className='relative w-[2.5rem] mdl:w-[5rem] aspect-square z-20'
       />
     </div>
   );
