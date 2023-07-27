@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import Lottie from 'react-lottie';
 
+import LoadingAnim from '../assets/animation/loading animation.json';
 import GalleryLayout from '../components/GalleryLayout';
 import GenPicker from '../components/GenPicker';
 import Modal from '../components/Modal';
@@ -80,6 +82,15 @@ const Gallery = () => {
   const [modalPokemonName, setModalPokemonName] = useState('bulbasaur');
   const [modalPokemon, setModalPokemon] = useState<Array<Pokemon>>([defaultPokemon]);
   const [modalLoading, setModalLoading] = useState(true);
+
+  const AnimOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: LoadingAnim,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
 
   const countPerPage = 12;
   const offset = (currentPage - 1) * countPerPage;
@@ -236,13 +247,6 @@ const Gallery = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalPokemonName]);
 
-  if (loading)
-    return (
-      <div className='w-screen relative top-[5rem] flex flex-col gap-[2.5rem] px-[1.25rem]'>
-        Loading...
-      </div>
-    );
-
   return (
     <div>
       <Modal modalHandler={modalHandler}>
@@ -251,12 +255,21 @@ const Gallery = () => {
       <div className='relative top-[15rem] flex flex-col gap-[2.5rem] px-[1.25rem] lg:px-[5rem]'>
         <TypeCarousel filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
         <GenPicker filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
-        <GalleryLayout pokemonList={pokemonList} modalHandler={modalHandler} />
-        <Pagination
-          count={count}
-          countPerPage={countPerPage}
-          pageChangeHandler={pageChangeHandler}
-        />
+        {loading && (
+          <div className='w-100% h-[22.5rem] flex justify-center items-center'>
+            <Lottie options={AnimOptions} height={200} width={200} />
+          </div>
+        )}
+        {!loading && (
+          <>
+            <GalleryLayout pokemonList={pokemonList} modalHandler={modalHandler} />
+            <Pagination
+              count={count}
+              countPerPage={countPerPage}
+              pageChangeHandler={pageChangeHandler}
+            />
+          </>
+        )}
       </div>
     </div>
   );

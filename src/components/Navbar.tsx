@@ -61,7 +61,7 @@ const Navbar = () => {
           </button>
         </div>
         <div className='relative w-[12.5rem] px-[1.25rem] py-[2.5rem] flex flex-col gap-[2.5rem] items-end justify-self-start grow font-[1rem]'>
-          <Link to='/favorite'>
+          <Link to='/gallery'>
             <div className='hover:text-primary duration-200'>Gallery</div>
           </Link>
           <Link to='/favorite'>
