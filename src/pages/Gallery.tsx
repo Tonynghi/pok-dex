@@ -3,13 +3,16 @@ import { useState, useEffect } from 'react';
 import Lottie from 'react-lottie';
 
 import LoadingAnim from '../assets/animation/loading animation.json';
+import Carousel from '../components/Carousel';
 import GalleryLayout from '../components/GalleryLayout';
 import GenPicker from '../components/GenPicker';
 import Modal from '../components/Modal';
 import ModalCard from '../components/ModalCard';
 import ModalCardMobile from '../components/ModalCardMobile';
 import Pagination, { PageChangeHandlerProps } from '../components/Pagination';
-import TypeCarousel from '../components/TypeCarousel';
+import SearchBar from '../components/SearchBar';
+import TypePicker from '../components/TypePicker';
+import useDebounce from '../hooks/useDebounce';
 import { Pokemon, FilterHandlerProps, ModalHandlerProps } from '../types';
 
 const defaultPokemon = {
@@ -72,6 +75,7 @@ const defaultPokemon = {
 };
 
 const Gallery = () => {
+  const [searchPokemonName, setSearchPokemonName] = useState<string>();
   const [currentFilter, setCurrentFilter] = useState('none');
   const [currentType, setCurrentType] = useState('normal');
   const [currentGen, setCurrentGen] = useState(1);
@@ -83,6 +87,28 @@ const Gallery = () => {
   const [modalPokemonName, setModalPokemonName] = useState('bulbasaur');
   const [modalPokemon, setModalPokemon] = useState<Array<Pokemon>>([defaultPokemon]);
   const [modalLoading, setModalLoading] = useState(true);
+
+  const typeArray: Array<string> = [
+    'normal',
+    'fighting',
+    'flying',
+    'grass',
+    'fire',
+    'water',
+    'electric',
+    'ice',
+    'rock',
+    'ground',
+    'steel',
+    'poison',
+    'bug',
+    'psychic',
+    'dark',
+    'ghost',
+    'dragon',
+    'fairy',
+  ];
+  const genArray: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   const AnimOptions = {
     loop: true,
@@ -109,6 +135,7 @@ const Gallery = () => {
     changeCurrentFilter: (filter) => setCurrentFilter(filter),
     changeCurrentType: (type) => setCurrentType(type),
     changeCurrentGen: (gen) => setCurrentGen(gen),
+    changeSearchPokemon: (name) => setSearchPokemonName(name),
   };
 
   const countLimiter = (estimatedCount: number): number => {
@@ -176,6 +203,15 @@ const Gallery = () => {
       .filter((pokemon) => pokemon !== null);
   };
 
+  const fetchPokemonByName = async (name: string) => {
+    const fetchByName = async () => {
+      return (await axios.get<Pokemon>(`https://pokeapi.co/api/v2/pokemon/${name}`)).data;
+    };
+    return Promise.all<Array<Promise<Pokemon>>>([fetchByName()]);
+  };
+
+  const debouncedSearch = useDebounce(searchPokemonName, 2000);
+
   const fetchPokemonListByType = async () => {
     const { data: fetchResults } = await axios.get<{
       pokemon: Array<{ pokemon: { name: string; url: string }; slot: number }>;
@@ -216,14 +252,21 @@ const Gallery = () => {
   };
 
   const getPokemonList = async () => {
-    if (currentFilter === 'none') {
-      const fetchList = await fetchPokemonList();
+    if (currentFilter === 'type') {
+      const fetchList = await fetchPokemonListByType();
       setPokemonList(fetchList);
     } else if (currentFilter === 'gen') {
       const fetchList = await fetchPokemonListByGen();
       setPokemonList(fetchList as Pokemon[]);
     } else {
-      const fetchList = await fetchPokemonListByType();
+      const fetchList = await fetchPokemonList();
+      setPokemonList(fetchList);
+    }
+  };
+
+  const getPokemonListByName = async () => {
+    if (debouncedSearch !== undefined) {
+      const fetchList = await fetchPokemonByName(debouncedSearch);
       setPokemonList(fetchList);
     }
   };
@@ -237,11 +280,22 @@ const Gallery = () => {
 
   useEffect(() => {
     setLoading(true);
-    getPokemonList()
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+    if (currentFilter !== 'name') {
+      getPokemonList()
+        .catch((error) => console.log(error))
+        .finally(() => setLoading(false));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, currentFilter, currentGen, currentType]);
+  }, [currentPage, currentFilter, currentGen, currentType, debouncedSearch]);
+
+  useEffect(() => {
+    if (currentFilter === 'name') {
+      getPokemonListByName()
+        .catch((error) => console.log(error))
+        .finally(() => setLoading(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
 
   useEffect(() => {
     getModalPokemonInfo().catch((error) => console.log(error));
@@ -254,9 +308,54 @@ const Gallery = () => {
         <ModalCardMobile modalPokemonInfo={modalPokemon} modalHandler={modalHandler} />
         <ModalCard modalPokemonInfo={modalPokemon} modalHandler={modalHandler} />
       </Modal>
-      <div className='relative top-[15rem] flex flex-col gap-[2.5rem] px-[1.25rem] lg:px-[5rem]'>
-        <TypeCarousel filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
-        <GenPicker filterHandler={filterHandler} pageChangeHandler={pageChangeHandler} />
+      <div className='relative top-[5rem] flex flex-col gap-[4rem] px-[1.25rem] lg:px-[5rem] py-[2.5rem] items-center'>
+        <SearchBar filterHandler={filterHandler} />
+        <Carousel>
+          {typeArray.map((type: string) => (
+            <TypePicker
+              key={type}
+              type={type}
+              currentType={filterHandler.getCurrentType()}
+              currentFilter={filterHandler.getCurrentFilter()}
+              onClick={() => {
+                if (
+                  filterHandler.getCurrentFilter() === 'type' &&
+                  filterHandler.getCurrentType() === type
+                ) {
+                  filterHandler.changeCurrentFilter('none');
+                  pageChangeHandler.changePage(1);
+                } else {
+                  filterHandler.changeCurrentFilter('type');
+                  filterHandler.changeCurrentType(type);
+                  pageChangeHandler.changePage(1);
+                }
+              }}
+            />
+          ))}
+        </Carousel>
+        <Carousel>
+          {genArray.map((gen: number) => (
+            <GenPicker
+              key={gen}
+              gen={gen}
+              currentGen={filterHandler.getCurrentGen()}
+              currentFilter={filterHandler.getCurrentFilter()}
+              onClick={() => {
+                if (
+                  filterHandler.getCurrentFilter() === 'gen' &&
+                  filterHandler.getCurrentGen() === gen
+                ) {
+                  filterHandler.changeCurrentFilter('none');
+                  pageChangeHandler.changePage(1);
+                } else {
+                  filterHandler.changeCurrentFilter('gen');
+                  filterHandler.changeCurrentGen(gen);
+                  pageChangeHandler.changePage(1);
+                }
+              }}
+            />
+          ))}
+        </Carousel>
         {loading && (
           <div className='w-100% h-[22.5rem] flex justify-center items-center'>
             <Lottie options={AnimOptions} height={200} width={200} />

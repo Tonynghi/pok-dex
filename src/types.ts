@@ -5,6 +5,7 @@ export type FilterHandlerProps = {
   changeCurrentFilter: (filter: string) => void;
   changeCurrentType: (type: string) => void;
   changeCurrentGen: (gen: number) => void;
+  changeSearchPokemon: (name: string) => void;
 };
 
 export type EvolutionChain = {

@@ -1,10 +1,6 @@
 import Slider from 'react-slick';
 
 import { ReactComponent as Arrow } from '../assets/svgs/Vector.svg';
-import { FilterHandlerProps } from '../types';
-
-import { PageChangeHandlerProps } from './Pagination';
-import TypePicker from './TypePicker';
 
 type NavButtonProps = {
   onClick: () => void;
@@ -36,57 +32,35 @@ const PrevButton = ({ onClick }: NavButtonProps) => {
   );
 };
 
-type TypeCarouselProps = {
-  filterHandler: FilterHandlerProps;
-  pageChangeHandler: PageChangeHandlerProps;
+type CarouselProps = {
+  children: React.ReactNode;
 };
 
-const TypeCarousel = ({ filterHandler, pageChangeHandler }: TypeCarouselProps) => {
-  const typeArray: Array<string> = [
-    'normal',
-    'fighting',
-    'flying',
-    'grass',
-    'fire',
-    'water',
-    'electric',
-    'ice',
-    'rock',
-    'ground',
-    'steel',
-    'poison',
-    'bug',
-    'psychic',
-    'dark',
-    'ghost',
-    'dragon',
-    'fairy',
-  ];
-
+const Carousel = ({ children }: CarouselProps) => {
   return (
     <Slider
       dots={false}
       arrows
       infinite
       speed={500}
-      slidesToShow={9}
-      slidesToScroll={9}
+      slidesToShow={6}
+      slidesToScroll={6}
       nextArrow={<NextButton onClick={() => console.log('next')} />}
       prevArrow={<PrevButton onClick={() => console.log('prev')} />}
-      className='flex'
+      className='flex relative w-[17.5rem] sm:w-[20rem] md:w-[37.5rem] lg:w-[47.5rem]'
       responsive={[
         {
           breakpoint: 1440,
           settings: {
-            slidesToShow: 9,
-            slidesToScroll: 9,
+            slidesToShow: 6,
+            slidesToScroll: 6,
           },
         },
         {
           breakpoint: 720,
           settings: {
-            slidesToShow: 6,
-            slidesToScroll: 6,
+            slidesToShow: 3,
+            slidesToScroll: 3,
           },
         },
         {
@@ -98,29 +72,9 @@ const TypeCarousel = ({ filterHandler, pageChangeHandler }: TypeCarouselProps) =
         },
       ]}
     >
-      {typeArray.map((type: string) => (
-        <TypePicker
-          key={type}
-          type={type}
-          currentType={filterHandler.getCurrentType()}
-          currentFilter={filterHandler.getCurrentFilter()}
-          onClick={() => {
-            if (
-              filterHandler.getCurrentFilter() === 'type' &&
-              filterHandler.getCurrentType() === type
-            ) {
-              filterHandler.changeCurrentFilter('none');
-              pageChangeHandler.changePage(1);
-            } else {
-              filterHandler.changeCurrentFilter('type');
-              filterHandler.changeCurrentType(type);
-              pageChangeHandler.changePage(1);
-            }
-          }}
-        />
-      ))}
+      {children}
     </Slider>
   );
 };
 
-export default TypeCarousel;
+export default Carousel;

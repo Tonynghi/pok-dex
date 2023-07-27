@@ -1,7 +1,3 @@
-import { FilterHandlerProps } from '../types';
-
-import { PageChangeHandlerProps } from './Pagination';
-
 const int2roman = (original: number): string => {
   if (original < 1 || original > 3999) {
     throw new Error('Error: Input integer limited to 1 through 3,999');
@@ -28,14 +24,14 @@ const int2roman = (original: number): string => {
   }, '');
 };
 
-type GenButtonProps = {
+type GenPickerProps = {
   gen: number;
   currentGen: number;
   currentFilter: string;
   onClick: () => void;
 };
 
-const GenButton = ({ gen, currentGen, currentFilter, onClick }: GenButtonProps) => {
+const GenPicker = ({ gen, currentGen, currentFilter, onClick }: GenPickerProps) => {
   return (
     <button
       type='button'
@@ -43,46 +39,11 @@ const GenButton = ({ gen, currentGen, currentFilter, onClick }: GenButtonProps) 
         currentFilter === 'gen' && currentGen === gen
           ? 'bg-primary hover:bg-primary700 text-white'
           : 'border-2 border-black bg-white hover:bg-black text-black hover:text-white'
-      } w-[2.5rem] aspect-ratio-1 flex justify-center items-center rounded-full duration-200 text-[1rem]  font-bold`}
+      } w-[2.5rem] h-[2.5rem] flex justify-center items-center rounded-full duration-200 text-[1rem] mx-auto grow font-bold`}
       onClick={onClick}
     >
       {/* {gens[gen as keyof typeof gens]} */ int2roman(gen)}
     </button>
-  );
-};
-
-type GenPickerProps = {
-  filterHandler: FilterHandlerProps;
-  pageChangeHandler: PageChangeHandlerProps;
-};
-
-const GenPicker = ({ filterHandler, pageChangeHandler }: GenPickerProps) => {
-  const genArray: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-  return (
-    <div className='w-full h-[2.5rem] flex flex-row justify-center gap-[0.75rem] relative self-center'>
-      {genArray.map((gen: number) => (
-        <GenButton
-          key={gen}
-          gen={gen}
-          currentGen={filterHandler.getCurrentGen()}
-          currentFilter={filterHandler.getCurrentFilter()}
-          onClick={() => {
-            if (
-              filterHandler.getCurrentFilter() === 'gen' &&
-              filterHandler.getCurrentGen() === gen
-            ) {
-              filterHandler.changeCurrentFilter('none');
-              pageChangeHandler.changePage(1);
-            } else {
-              filterHandler.changeCurrentFilter('gen');
-              filterHandler.changeCurrentGen(gen);
-              pageChangeHandler.changePage(1);
-            }
-          }}
-        />
-      ))}
-    </div>
   );
 };
 
