@@ -1,0 +1,14 @@
+<svg width="380" height="360" viewBox="0 0 380 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="380" height="360" fill="#CE26C3"/>
+<mask id="mask0_58_1025" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="380" height="360">
+<rect width="380" height="360" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_58_1025)">
+<path d="M190 460C245.228 460 290 415.228 290 360C290 304.772 245.228 260 190 260C134.772 260 90 304.772 90 360C90 415.228 134.772 460 190 460Z" fill="#CE26C3"/>
+<path d="M263.438 360L224.375 338.656L229.781 320.172L211.344 325.625L190 286.562L168.656 325.625L150.172 320.172L155.625 338.656L116.562 360L155.625 381.344L150.172 399.828L168.656 394.375L190 433.438L211.344 394.375L229.828 399.781L224.375 381.344L263.438 360ZM200.5 370.5L190 389.688L179.5 370.5L160.312 360L179.5 349.5L190 330.312L200.5 349.5L219.688 360L200.5 370.5Z" fill="#FF66F5"/>
+<circle cx="190" cy="-20.0001" r="200" transform="rotate(-45 190 -20.0001)" fill="#FF66F5"/>
+<circle cx="190.002" cy="-20.0001" r="75" transform="rotate(-45 190.002 -20.0001)" fill="#CE26C3"/>
+<rect x="39.7397" y="112.582" width="400" height="25" transform="rotate(-45 39.7397 112.582)" fill="#CE26C3"/>
+<circle cx="189.997" cy="-19.9945" r="50" transform="rotate(-45 189.997 -19.9945)" fill="#FF66F5"/>
+</g>
+</svg>

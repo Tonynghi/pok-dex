@@ -4,8 +4,9 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        sml: { min: '320px', max: '640px' },
+        sml: '560px',
         '3xl': '1872px',
+        mdl: '880px',
       },
       container: {
         center: true,
@@ -15,6 +16,15 @@ module.exports = {
         primary700: '#B40008',
         secondary50: '#D7D7D7',
         secondary500: '#717171',
+      },
+      keyframes: {
+        progress: {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
+        },
+      },
+      animation: {
+        'progress-bar': 'progress 1.5s ease-out',
       },
     },
   },

@@ -10,7 +10,7 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   return (
     <div>
-      <div className='absolute top-0 left-0 z-30 w-screen h-[3.75rem] lg:h-[5rem] bg-secondary500 text-white px-[1.25rem] lg:px-[5rem] py-[0.75rem] lg:py-[1.25rem] flex flex-row justify-between'>
+      <div className='fixed top-0 left-0 z-30 w-screen h-[3.75rem] lg:h-[5rem] bg-secondary500 text-white px-[1.25rem] lg:px-[5rem] py-[0.75rem] lg:py-[1.25rem] flex flex-row justify-between'>
         <Link to='/'>
           <div className='relative'>
             <LogoMobile className='lg:h-[40px]' />
@@ -48,20 +48,20 @@ const Navbar = () => {
       <div
         className={`${
           open ? 'visible' : 'hidden'
-        } absolute z-40 w-screen h-screen bg-black opacity-75 duration-500 lg:hidden`}
+        } fixed z-40 w-screen h-screen bg-black opacity-75 duration-500 lg:hidden`}
       />
       <div
         className={`${
           open ? 'visible' : 'hidden'
-        } absolute top-0 right-0 z-50 h-screen w-[12.5rem] bg-secondary500 text-white duration-500 flex flex-col lg:hidden`}
+        } fixed top-0 right-0 z-50 h-screen w-[12.5rem] bg-secondary500 text-white duration-500 flex flex-col lg:hidden`}
       >
         <div className='relative h-[3.75rem] w-[12.5rem] px-[1.25rem] py-[0.75rem] flex flex-row justify-end justify-self-start border-b-2'>
           <button type='button' className='relative' onClick={() => setOpen(false)}>
-            <Close />
+            <Close className='w-[2.25rem] aspect-square' />
           </button>
         </div>
         <div className='relative w-[12.5rem] px-[1.25rem] py-[2.5rem] flex flex-col gap-[2.5rem] items-end justify-self-start grow font-[1rem]'>
-          <Link to='/favorite'>
+          <Link to='/gallery'>
             <div className='hover:text-primary duration-200'>Gallery</div>
           </Link>
           <Link to='/favorite'>
