@@ -44,7 +44,7 @@ const Home = () => {
         <div className='relative flex flex-col gap-[3rem] justify-between py-[4rem]'>
           <div className='relative gap-[1.25rem] flex flex-col items-center'>
             <div className='relative text-[6rem] font-bold flex items-center justify-center text-center text-white'>
-              POKÉDEX
+              POKÉDEX gg
             </div>
             <div className='relative text-[1rem] items-center justify-center text-center text-white'>
               A collection of every pocket monsters,all in one site
@@ -53,7 +53,7 @@ const Home = () => {
           <div className='relative gap-[0.5rem] flex flex-col items-center'>
             <Link to='/gallery'>
               <div className='relative w-[15rem] h-[5rem] bg-primary font-bold text-[1.5rem] flex items-center justify-center text-white hover:bg-primary700 duration-200'>
-                Explore now
+                Explore now hello
               </div>
             </Link>
             <div className='relative flex items-center justify-center text-white text-[1rem]'>
