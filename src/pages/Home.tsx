@@ -17,7 +17,7 @@ const Home = () => {
         <img className='' src={Object} alt='Pokedex' />
         <div className='relative gap-[1.25rem] flex flex-col items-center'>
           <div className='relative w-[17.5rem] text-[3.25rem] font-bold flex items-center justify-center text-center text-white'>
-            POKÉDEX
+            POKÉDEX test
           </div>
           <div className='relative w-[17.5rem] text-[1rem] items-center justify-center text-center text-white'>
             A collection of every pocket monsters,all in one site
