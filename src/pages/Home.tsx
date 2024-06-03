@@ -9,14 +9,14 @@ const Home = () => {
     <div>
       <Navbar />
       <img
-        className='absolute top-0 z-0 z-0 w-screen h-screen object-cover object-center'
+        className='absolute top-0 z-0 w-screen h-screen object-cover object-center'
         src={Homebg}
         alt='Home bg'
       />
       <div className='relative lg:hidden px-[1.25rem] top-[5rem] w-screen z-10 flex flex-col gap-[2.5rem] items-center'>
         <img className='' src={Object} alt='Pokedex' />
         <div className='relative gap-[1.25rem] flex flex-col items-center'>
-          <div className='relative w-[17.5rem] text-[3.25rem] font-bold flex items-center justify-center text-center text-white'>
+          <div className='relative w-[17.5rem] text-[3.25rem] font-bold flex items-center justify-center text-center text-red'>
             POKÉDEX test
           </div>
           <div className='relative w-[17.5rem] text-[1rem] items-center justify-center text-center text-white'>
